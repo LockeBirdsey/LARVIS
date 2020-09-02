@@ -1,10 +1,10 @@
 import unittest
-from coffee_machine import Coffee_Machine
+from coffeemachine import CoffeeMachine
 
 
 class Test_Coffee_Machine(unittest.TestCase):
     def test(self):
-        cm = Coffee_Machine()
+        cm = CoffeeMachine()
         # Testing for the smallest amount of coins with the correct amount
         self.assertDictEqual(cm.return_coins(3.14, 500),
                              {'num_one_cent_coins': 1, 'num_two_cent_coins': 0, 'num_five_cent_coins': 1,

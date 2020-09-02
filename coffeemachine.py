@@ -2,7 +2,7 @@ import math
 import unittest
 
 
-class Coffee_Machine:
+class CoffeeMachine:
     def return_coins(self, coffee_price, eur_inserted):
         if coffee_price < 0:
             raise Exception("Coffee price must be positive")
@@ -54,8 +54,6 @@ class Coffee_Machine:
                   "num_fifty_cent_coins": num_fifty_cent_coins,
                   "num_one_euro_coins": num_one_euro_coins,
                   "num_two_euro_coins": num_two_euro_coins}
-        # print(change)
-
         return change
 
     def operating_loop(self):
@@ -68,7 +66,7 @@ class Coffee_Machine:
 
 
 if __name__ == '__main__':
-    cm = Coffee_Machine()
+    cm = CoffeeMachine()
     cm.operating_loop()
 
 # call for inputs
