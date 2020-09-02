@@ -67,10 +67,14 @@ def modify_people():
 
     if 'delete' in request.form:
         print("DELETE")
+        if select is not None:
+            hero_db = HeroDatabase()
+            hero_db.connect()
+            hero_db.remove_person_from_database(str(select))
+            hero_db.close()
+            return show_events()
     if 'modify' in request.form:
         print("MODIFY")
-    # if request.form['Modify']:
-    #     print("MODIFY")
 
     return render_template('formpeople.html', title='People', form=form)
 
