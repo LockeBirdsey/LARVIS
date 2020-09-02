@@ -1,5 +1,4 @@
 import psycopg2
-from datetime import datetime
 
 
 class HeroDatabase:
@@ -17,17 +16,26 @@ class HeroDatabase:
         cur = self.conn.cursor()
         cur.execute(insert_string, (when, how, who,))
         self.conn.commit()
+        self.save_new_person(who)
+
+    def save_new_person(self, who):
+        insert_string = 'INSERT INTO people(name) VALUES(%s)'
+        cur = self.conn.cursor()
+        cur.execute(insert_string, (who,))
+        self.conn.commit()
 
     def inspect(self):
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM super;")
-        all_results = cur.fetchall()
-        cur.close()
-        return all_results
+        return self.query("SELECT * FROM super;")
 
-    def get_all_people(self):
+    def get_all_people_from_events(self):
+        return self.query("SELECT event_who FROM super;")
+
+    def get_all_people_from_people(self):
+        return self.query("SELECT name FROM people;")
+
+    def query(self, query):
         cur = self.conn.cursor()
-        cur.execute("SELECT event_who FROM super;")
+        cur.execute(query)
         all_results = cur.fetchall()
         cur.close()
         return all_results

@@ -11,12 +11,12 @@ app.config['SECRET_KEY'] = 'filesystem'
 
 @app.route('/')
 def show_events():
-    # Display existing Database content
     hero_db = HeroDatabase()
     hero_db.connect()
     all_results = hero_db.inspect()
+    people = hero_db.get_all_people_from_people()
     hero_db.close()
-    return render_template('existingevents.html', title='Existing Events', rows=all_results)
+    return render_template('existingevents.html', title='Existing Events', rows=all_results, people=people)
 
 
 class EventRegisterForm(FlaskForm):
@@ -30,7 +30,7 @@ class EventRegisterForm(FlaskForm):
 def add_event():
     form = EventRegisterForm()
     if form.validate_on_submit():
-        # add to database
+        # add event to database
         hero_db = HeroDatabase()
         hero_db.connect()
         the_time = form.time.data
@@ -40,6 +40,14 @@ def add_event():
         hero_db.close()
         return show_events()
     return render_template('formadd.html', title='Add Event', form=form)
+
+@app.route('/people', methods=['GET', 'POST'])
+def modify_people():
+    hero_db = HeroDatabase()
+    hero_db.connect()
+    people = hero_db.get_all_people_from_people()
+    hero_db.close()
+    return render_template('formpeople.html', title='People', people=people)
 
 
 if __name__ == '__main__':
