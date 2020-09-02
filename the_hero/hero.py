@@ -21,13 +21,23 @@ class HeroDatabase:
     def inspect(self):
         cur = self.conn.cursor()
         cur.execute("SELECT * FROM super;")
-        db_version = cur.fetchall()
-        print(db_version)
+        all_results = cur.fetchall()
         cur.close()
+        return all_results
+
+    def get_all_people(self):
+        cur = self.conn.cursor()
+        cur.execute("SELECT event_who FROM super;")
+        all_results = cur.fetchall()
+        cur.close()
+        return all_results
 
     def main(self):
         self.connect()
         self.inspect()
+
+    def close(self):
+        self.conn.close()
 
 
 if __name__ == '__main__':
