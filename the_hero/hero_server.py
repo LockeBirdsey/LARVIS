@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 
 from the_hero.hero import HeroDatabase
@@ -41,13 +41,38 @@ def add_event():
         return show_events()
     return render_template('formadd.html', title='Add Event', form=form)
 
+
+class PersonModifyForm(FlaskForm):
+    people = SelectField("People", validators=[DataRequired()])
+    new_name = StringField("New Name")
+    delete = SubmitField("Delete")
+    modify = SubmitField("Modify")
+
+
 @app.route('/people', methods=['GET', 'POST'])
 def modify_people():
+    form = PersonModifyForm()
+    # Update the people that can be selected
     hero_db = HeroDatabase()
     hero_db.connect()
     people = hero_db.get_all_people_from_people()
     hero_db.close()
-    return render_template('formpeople.html', title='People', people=people)
+    choices = []
+    for p in people:
+        choices.append(tuple((p[0], p[0])))
+    form.people.choices = choices
+
+    select = request.form.get('people')
+    print(str(select))
+
+    if 'delete' in request.form:
+        print("DELETE")
+    if 'modify' in request.form:
+        print("MODIFY")
+    # if request.form['Modify']:
+    #     print("MODIFY")
+
+    return render_template('formpeople.html', title='People', form=form)
 
 
 if __name__ == '__main__':

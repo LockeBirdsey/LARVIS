@@ -1,14 +1,14 @@
 {% extends "formbase.html" %}
 {% block content %}
 <h1>Modify People</h1>
-
-<p>
-    <label for="people">Choose a person:</label>
-    <select name="people" id="people">
-        {% for peeps in people %}
-        <option value={{peeps[0]}}>{{peeps[0]}}</option>
-        {% endfor %}
-    </select>
-</p>
-
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.people.label }}:
+        {{ form.people }}
+        <br><br>
+        {{ form.delete() }}
+        {{ form.modify() }}
+    </p>
+</form>
 {% endblock %}
