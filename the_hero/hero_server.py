@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 
+# TODO This can't be seen in the docker execution
 from the_hero.hero import HeroDatabase
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ def show_events():
 
 
 class EventRegisterForm(FlaskForm):
+    # TODO Split time into YYYY:MM:DD HH:mm:SS dropdowns and all the associated code with that
     time = StringField("Time", validators=[DataRequired()])
     how = StringField("How", validators=[DataRequired()])
     who = StringField("Who", validators=[DataRequired()])
