@@ -18,6 +18,7 @@ class XKCDScraper:
     # We assume the execute directory of the service will store the images
     STORAGE_PATH = os.getcwd()
 
+    # Initialisation of the ComicStrip objects
     # Only saving two comic strips at a time
     # Set up the storage paths here since we a) are only allowed two and b) they won't be changing
     start_time = datetime.now()
@@ -40,13 +41,10 @@ class XKCDScraper:
         comic_div = soup.find(id="comic")
         raw_link = comic_div.img['src']
         # Make the comic url gettable
-        get_link = raw_link.replace("//", "https://")  # Why replace when you can just prepend?
-        print(get_link)
+        comic_link = raw_link.replace("//", "https://")  # Why replace when you can just prepend?
         # Create the timestamp of when we acquired the comic
         time_stamp = datetime.now()
-        # time_stamp = now.strftime("%d/%m/%Y %H:%M:%S")
-        print(time_stamp)
-        return (comic_id, get_link, time_stamp)
+        return comic_id, comic_link, time_stamp
 
     def check_duplicate(self, comic_id):
         # Check ID against existing downloads
@@ -67,21 +65,21 @@ class XKCDScraper:
 
 
 class XKCDService:
-    # run hourly
-    # on the hour
+    # Run hourly +/- 1.5 seconds
+    # Not suitable if this service is time critical
     def main(self):
         scraper = XKCDScraper()
         comic_details = scraper.get_comic()
-        while scraper.check_duplicate(comic_details) is True:
+        while scraper.check_duplicate(comic_details[0]) is True:
             comic_details = scraper.get_comic()
         scraper.store_comic(comic_details[0], comic_details[1], comic_details[2])
         self.schedule_next()
 
     def schedule_next(self):
-        # start the timer for the next Execution
+        # start the timer for the next Execution of the service
         now = datetime.now()
         next_exec = now.replace(day=now.day, hour=now.hour, minute=now.minute, second=now.second,
-                                microsecond=now.microsecond) + timedelta(minutes=1)
+                                microsecond=now.microsecond) + timedelta(hours=1)
         time_delta = next_exec - now
         seconds = time_delta.total_seconds()
         timer = Timer(seconds, self.main)
