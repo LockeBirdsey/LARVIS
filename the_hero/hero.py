@@ -9,7 +9,7 @@ class HeroDatabase:
             host="localhost",
             database="super",
             user="postgres",
-            password="")  # TODO Make hidden in config file
+            password="password")  # TODO Make hidden in config file
 
     def new_save(self, when, how, who):
         insert_string = 'INSERT INTO super(event_when, event_how, event_who) VALUES(TIMESTAMP %s, %s, %s)'
