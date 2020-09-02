@@ -46,8 +46,11 @@ class HeroDatabase:
         cur.execute("DELETE FROM people WHERE name = %s", (person,))
         self.conn.commit()
 
-    # def rename_person_in_database(self, orig_name, new_name):
-
+    def rename_person_in_database(self, orig_name, new_name):
+        cur = self.conn.cursor()
+        # Remove from the people table first
+        cur.execute("UPDATE people SET name = %s WHERE name = %s", (new_name, orig_name,))
+        self.conn.commit()
 
     def main(self):
         self.connect()

@@ -56,18 +56,9 @@ class CoffeeMachine:
                   "num_two_euro_coins": num_two_euro_coins}
         return change
 
-    def operating_loop(self):
-        coffee_price = 3.14
-        # main loop
-        # need to check for positive integers for param 2
-        # need to ensure param 1 is positive at all times (to prevent free coffee ;))
-        change = self.return_coins(coffee_price, 7.02)
-        # return change (print the amount)
-
 
 if __name__ == '__main__':
     cm = CoffeeMachine()
-    cm.operating_loop()
 
 # call for inputs
 # catch signal on exit (like a real coffee machine)

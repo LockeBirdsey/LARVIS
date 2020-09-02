@@ -63,7 +63,6 @@ def modify_people():
     form.people.choices = choices
 
     select = request.form.get('people')
-    print(str(select))
 
     if 'delete' in request.form:
         print("DELETE")
@@ -74,8 +73,11 @@ def modify_people():
             hero_db.close()
             return show_events()
     if 'modify' in request.form:
-        print("MODIFY")
-
+        new_name = form.new_name.data
+        hero_db.connect()
+        hero_db.rename_person_in_database(str(select), new_name)
+        hero_db.close()
+        return show_events()
     return render_template('formpeople.html', title='People', form=form)
 
 

@@ -2,7 +2,7 @@ import unittest
 from coffee_machine.coffeemachine import CoffeeMachine
 
 
-class Test_Coffee_Machine(unittest.TestCase):
+class TestCoffeeMachine(unittest.TestCase):
     def test(self):
         cm = CoffeeMachine()
         # Testing for the smallest amount of coins with the correct amount
