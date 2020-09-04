@@ -57,11 +57,13 @@ class XKCDScraper:
             self.comic_strip_a.id = comic_id
             # download and save to a's path
             urlretrieve(link, self.comic_strip_a.path)
+            print("Saving comic to " + self.comic_strip_a.path)
         else:
             self.comic_strip_b.last_scraped = time_stamp
             self.comic_strip_b.id = comic_id
             # download and save to b's path
             urlretrieve(link, self.comic_strip_b.path)
+            print("Saving comic to " + self.comic_strip_a.path)
 
 
 class XKCDService:

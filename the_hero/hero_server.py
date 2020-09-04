@@ -50,6 +50,7 @@ class EventRegisterForm(FlaskForm):
     for i in range(0, 60):
         print(i)
         second_choices.append(tuple((i, i)))
+    #Build the form fields
     time_year = SelectField("Year", choices=year_choices, validators=[DataRequired()])
     time_month = SelectField("Month", choices=month_choices, validators=[DataRequired()])
     time_day = SelectField("Day", choices=day_choices, validators=[DataRequired()])
@@ -57,8 +58,6 @@ class EventRegisterForm(FlaskForm):
     time_minute = SelectField("Minute", choices=minute_choices, validators=[DataRequired()])
     time_second = SelectField("Second", choices=second_choices, validators=[DataRequired()])
 
-    # Old time input method
-    # time = StringField("Time", validators=[DataRequired()])
     how = StringField("How", validators=[DataRequired()])
     who = StringField("Who", validators=[DataRequired()])
     submit = SubmitField("Submit")
@@ -72,11 +71,11 @@ def build_timestamp(y, mo, d, h, mi, s):
 def add_event():
     form = EventRegisterForm()
     if form.validate_on_submit():
-        # add event to database
+        # Add event to database
         hero_db = HeroDatabase()
         hero_db.connect()
 
-        # get all the time data
+        # Get all the time data
         year = request.form.get('time_year')
         month = request.form.get('time_month')
         day = request.form.get('time_day')
@@ -84,10 +83,10 @@ def add_event():
         minute = request.form.get('time_minute')
         second = request.form.get('time_second')
         the_when = build_timestamp(year, month, day, hour, minute, second)
-        # get the remaining event data
+        # Get the remaining event data
         the_how = form.how.data
         the_who = form.who.data
-        # create the database records
+        # Create the database records
         hero_db.new_save(the_when, the_how, the_who)
         hero_db.close()
         return show_events()

@@ -56,9 +56,10 @@ class CoffeeMachine:
                   "num_two_euro_coins": num_two_euro_coins}
         return change
 
+    def main(self):
+        print(self.return_coins(3.14, 500))
+
 
 if __name__ == '__main__':
     cm = CoffeeMachine()
-
-# call for inputs
-# catch signal on exit (like a real coffee machine)
+    cm.main()

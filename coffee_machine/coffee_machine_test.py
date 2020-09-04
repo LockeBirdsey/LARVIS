@@ -1,11 +1,15 @@
 import unittest
-from coffee_machine.coffeemachine import CoffeeMachine
+#For PYCharm
+#from coffee_machine.coffeemachine import CoffeeMachine
+#For CLI Python
+from coffeemachine import CoffeeMachine
+
 
 
 class TestCoffeeMachine(unittest.TestCase):
     def test(self):
         cm = CoffeeMachine()
-        # Testing for the smallest amount of coins with the correct amount
+        # Testing for the smallest amount of coins with the correct value
         self.assertDictEqual(cm.return_coins(3.14, 500),
                              {'num_one_cent_coins': 1, 'num_two_cent_coins': 0, 'num_five_cent_coins': 1,
                               'num_ten_cent_coins': 1, 'num_twenty_cent_coins': 1, 'num_fifty_cent_coins': 1,
