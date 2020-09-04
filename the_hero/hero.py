@@ -12,9 +12,9 @@ class HeroDatabase:
             password="password")
 
     def new_save(self, when, how, who):
-        insert_string = 'INSERT INTO super(event_when, event_how, event_who) VALUES(TIMESTAMP %s, %s, %s)'
+        insert_string = 'INSERT INTO events(event_when, event_how) VALUES(TIMESTAMP %s, %s)'
         cur = self.conn.cursor()
-        cur.execute(insert_string, (when, how, who,))
+        cur.execute(insert_string, (when, how,))
         self.conn.commit()
         self.save_new_person(who)
 
@@ -25,10 +25,10 @@ class HeroDatabase:
         self.conn.commit()
 
     def inspect(self):
-        return self.query("SELECT * FROM super;")
+        return self.query("SELECT * FROM events;")
 
     def get_all_people_from_events(self):
-        return self.query("SELECT event_who FROM super;")
+        return self.query("SELECT event_who FROM events;")
 
     def get_all_people_from_people(self):
         return self.query("SELECT name FROM people;")
