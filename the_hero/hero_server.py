@@ -20,7 +20,7 @@ hero_db = HeroDatabase()
 def show_events():
     hero_db.connect()
     all_results = hero_db.inspect_all()
-    people = hero_db.get_all_people_from_people()
+    people = hero_db.get_all_people()
     hero_db.close()
     return render_template('existingevents.html', title='Existing Events', rows=all_results, people=people)
 
@@ -91,31 +91,27 @@ def modify_people():
     form = PersonModifyForm()
     # Update the people that can be selected
     hero_db.connect()
-    people = hero_db.get_all_people_from_people()
+    people = hero_db.get_all_people()
     hero_db.close()
-    choices = []
-    for p in people:
-        choices.append(tuple((p[0], p[0])))
+    choices = [tuple((p[0], p[0])) for p in people]
     form.people.choices = choices
 
-    select = request.form.get('people')
-
-    if 'delete' in request.form:
-        print("DELETE")
-        if select is not None:
+    selected_person = request.form.get('people')
+    if selected_person is not None:
+        if 'delete' in request.form:
             hero_db.connect()
-            hero_db.remove_person_from_database(str(select))
+            hero_db.remove_person(str(selected_person))
             hero_db.close()
             return show_events()
-    if 'modify' in request.form:
-        new_name = form.new_name.data
-        hero_db.connect()
-        if len(new_name) is 0:
-            flash('Cannot rename someone to an empty string')
-        else:
-            hero_db.rename_person_in_database(str(select), new_name)
-            hero_db.close()
-            return show_events()
+        if 'modify' in request.form:
+            new_name = form.new_name.data
+            hero_db.connect()
+            if len(new_name) is 0:
+                flash('Cannot rename someone to an empty string')
+            else:
+                hero_db.rename_person(str(selected_person), new_name)
+                hero_db.close()
+                return show_events()
     return render_template('formpeople.html', title='People', form=form)
 
 

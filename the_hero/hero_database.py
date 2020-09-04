@@ -14,6 +14,20 @@ class HeroDatabase:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
+    def query(self, query):
+        cur = self.conn.cursor()
+        cur.execute(query)
+        all_results = cur.fetchall()
+        cur.close()
+        return all_results
+
+    def query_with_params(self, query, params):
+        cur = self.conn.cursor()
+        cur.execute(query, params)
+        all_results = cur.fetchall()
+        cur.close()
+        return all_results
+
     # Save a new event into the events table and the person into the people table
     # and link based on the person's generated id
     def new_save(self, when, how, who):
@@ -37,31 +51,17 @@ class HeroDatabase:
         return self.query(
             'SELECT * FROM events LEFT OUTER JOIN people ON (events.who_id = people.id) ORDER BY events.event_when;')
 
-    def get_all_people_from_people(self):
+    def get_all_people(self):
         return self.query("SELECT name, id FROM people ORDER BY id;")
 
-    def query(self, query):
-        cur = self.conn.cursor()
-        cur.execute(query)
-        all_results = cur.fetchall()
-        cur.close()
-        return all_results
-
-    def query_with_params(self, query, params):
-        cur = self.conn.cursor()
-        cur.execute(query, params)
-        all_results = cur.fetchall()
-        cur.close()
-        return all_results
-
-    def remove_person_from_database(self, person):
+    def remove_person(self, person):
         cur = self.conn.cursor()
         person_id = self.get_persons_id(person)
         cur.execute("UPDATE events SET who_id = NULL WHERE who_id = %s", (person_id,))
         cur.execute("DELETE FROM people WHERE name = %s", (person,))
         self.conn.commit()
 
-    def rename_person_in_database(self, orig_name, new_name):
+    def rename_person(self, orig_name, new_name):
         cur = self.conn.cursor()
         cur.execute("UPDATE people SET name = %s WHERE name = %s", (new_name, orig_name,))
         self.conn.commit()
