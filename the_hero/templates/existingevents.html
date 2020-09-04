@@ -8,13 +8,18 @@
     </tr>
     {% for row in rows %}
     <tr>
-        <td>{{row[1]}}</td>
-        <td>{{row[2]}}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
     </tr>
     {% endfor %}
 </table>
 <h1>People I Thank</h1>
-{% for peeps in people %}
-<p>{{peeps[0]}}</p>
-{% endfor %}
+<div>
+    <ul>
+        {% for peeps in people %}
+        <li>{{ peeps[0] }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
 {% endblock %}

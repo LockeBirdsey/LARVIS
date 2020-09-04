@@ -28,10 +28,10 @@ class HeroDatabase:
         self.conn.commit()
 
     def inspect_all(self):
-        return self.query("SELECT * FROM events;")
+        return self.query("SELECT * FROM events ORDER BY event_when;")
 
     def get_all_people_from_people(self):
-        return self.query("SELECT name FROM people;")
+        return self.query("SELECT name FROM people ORDER BY id;")
 
     def query(self, query):
         cur = self.conn.cursor()

@@ -4,10 +4,10 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 
 # This can be seen from Docker
-from hero import HeroDatabase
+from hero_database import HeroDatabase
 
 # This can be seen from Pycharm
-# from the_hero.hero import HeroDatabase
+# from the_hero.hero_database import HeroDatabase
 
 # Web server
 app = Flask(__name__)
