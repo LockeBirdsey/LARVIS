@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
@@ -13,10 +13,11 @@ from hero_database import HeroDatabase
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'filesystem'
 
+hero_db = HeroDatabase()
+
 
 @app.route('/')
 def show_events():
-    hero_db = HeroDatabase()
     hero_db.connect()
     all_results = hero_db.inspect_all()
     people = hero_db.get_all_people_from_people()
@@ -72,7 +73,6 @@ def add_event():
     form = EventRegisterForm()
     if form.validate_on_submit():
         # Add event to database
-        hero_db = HeroDatabase()
         hero_db.connect()
 
         # Get all the time data
@@ -97,14 +97,13 @@ class PersonModifyForm(FlaskForm):
     people = SelectField("People", validators=[DataRequired()])
     new_name = StringField("New Name")
     delete = SubmitField("Delete")
-    modify = SubmitField("Modify")
+    modify = SubmitField("Rename")
 
 
 @app.route('/people', methods=['GET', 'POST'])
 def modify_people():
     form = PersonModifyForm()
     # Update the people that can be selected
-    hero_db = HeroDatabase()
     hero_db.connect()
     people = hero_db.get_all_people_from_people()
     hero_db.close()
@@ -118,7 +117,6 @@ def modify_people():
     if 'delete' in request.form:
         print("DELETE")
         if select is not None:
-            hero_db = HeroDatabase()
             hero_db.connect()
             hero_db.remove_person_from_database(str(select))
             hero_db.close()
@@ -126,9 +124,12 @@ def modify_people():
     if 'modify' in request.form:
         new_name = form.new_name.data
         hero_db.connect()
-        hero_db.rename_person_in_database(str(select), new_name)
-        hero_db.close()
-        return show_events()
+        if len(new_name) is 0:
+            flash('Cannot rename someone to an empty string')
+        else:
+            hero_db.rename_person_in_database(str(select), new_name)
+            hero_db.close()
+            return show_events()
     return render_template('formpeople.html', title='People', form=form)
 
 

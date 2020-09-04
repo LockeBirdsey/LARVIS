@@ -1,15 +1,23 @@
 {% extends "formbase.html" %}
 {% block content %}
 <h1>Modify People</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+    {% for message in messages %}
+    <li>Warning: {{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <p>
-        {{ form.people.label }}:
-        {{ form.people }}
+        Person: {{ form.people }}
         <br><br>
-        {{ form.delete() }}<br><br>
-        {{ form.new_name.label }} {{ form.new_name(size=32)}}
-        {{ form.modify() }}
+
+        {{ form.new_name.label }}: {{ form.new_name(size=32)}}
+        {{ form.modify() }} OR {{ form.delete() }}<br><br>
     </p>
 </form>
 {% endblock %}
