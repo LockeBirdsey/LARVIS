@@ -6,7 +6,7 @@ class HeroDatabase:
 
     def connect(self):
         self.conn = psycopg2.connect(
-            host="localhost",
+            host="0.0.0.0",
             database="super",
             user="postgres",
             password="password")  # TODO Make hidden in config file

@@ -26,4 +26,4 @@ services:
       - .:/app
     depends_on:
       - postgres
-    entrypoint: ["python", "hero_server.py"]
+#    entrypoint: ["python", "hero_server.py"]

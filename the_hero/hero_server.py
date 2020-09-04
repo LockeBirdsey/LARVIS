@@ -2,10 +2,14 @@ from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
+import psycopg2
 
-# TODO This can't be seen in the docker execution
-from the_hero.hero import HeroDatabase
+# This can be seen from Docker
+from hero import HeroDatabase
+# This can be seen from Pycharm
+# from the_hero.hero import HeroDatabase
 
+# Web server
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'filesystem'
 
