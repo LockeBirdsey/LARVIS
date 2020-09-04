@@ -50,7 +50,7 @@ class EventRegisterForm(FlaskForm):
     for i in range(0, 60):
         print(i)
         second_choices.append(tuple((i, i)))
-    #Build the form fields
+    # Build the form fields
     time_year = SelectField("Year", choices=year_choices, validators=[DataRequired()])
     time_month = SelectField("Month", choices=month_choices, validators=[DataRequired()])
     time_day = SelectField("Day", choices=day_choices, validators=[DataRequired()])

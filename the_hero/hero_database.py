@@ -15,23 +15,25 @@ class HeroDatabase:
             print(error)
 
     def new_save(self, when, how, who):
-        insert_string = 'INSERT INTO events(event_when, event_how) VALUES(TIMESTAMP %s, %s)'
+        insert_string = 'INSERT INTO events(event_when, event_how, who_id) VALUES(TIMESTAMP %s, %s, %s)'
         cur = self.conn.cursor()
-        cur.execute(insert_string, (when, how,))
+        person_id = self.save_new_person(who)
+        cur.execute(insert_string, (when, how, person_id))
         self.conn.commit()
-        self.save_new_person(who)
 
     def save_new_person(self, who):
-        insert_string = 'INSERT INTO people(name) VALUES(%s)'
+        insert_string = 'INSERT INTO people(name) VALUES(%s) RETURNING id;'
         cur = self.conn.cursor()
         cur.execute(insert_string, (who,))
         self.conn.commit()
+        return cur.fetchone()[0]
 
     def inspect_all(self):
-        return self.query("SELECT * FROM events ORDER BY event_when;")
+        return self.query(
+            'SELECT * FROM events JOIN people ON (events.who_id = people.id) ORDER BY events.event_when;')
 
     def get_all_people_from_people(self):
-        return self.query("SELECT name FROM people ORDER BY id;")
+        return self.query("SELECT name, id FROM people ORDER BY id;")
 
     def query(self, query):
         cur = self.conn.cursor()

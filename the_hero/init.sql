@@ -1,8 +1,10 @@
+CREATE TABLE people(
+id serial PRIMARY KEY,
+name TEXT NOT NULL);
+
 CREATE TABLE events(
 id serial PRIMARY KEY,
 event_when TIMESTAMP NOT NULL,
-event_how VARCHAR(5000));
-
-CREATE TABLE people(
-id serial PRIMARY KEY,
-name VARCHAR(80) NOT NULL);
+event_how TEXT NOT NULL,
+who_id serial,
+FOREIGN KEY(who_id) REFERENCES people(id));
