@@ -6,10 +6,10 @@ class HeroDatabase:
 
     def connect(self):
         self.conn = psycopg2.connect(
-            host="0.0.0.0",
-            database="super",
+            host="postgres",
+            database="superhero",
             user="postgres",
-            password="password")  # TODO Make hidden in config file
+            password="password")
 
     def new_save(self, when, how, who):
         insert_string = 'INSERT INTO super(event_when, event_how, event_who) VALUES(TIMESTAMP %s, %s, %s)'
