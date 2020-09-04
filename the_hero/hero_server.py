@@ -6,6 +6,7 @@ import psycopg2
 
 # This can be seen from Docker
 from hero import HeroDatabase
+
 # This can be seen from Pycharm
 # from the_hero.hero import HeroDatabase
 
@@ -25,11 +26,47 @@ def show_events():
 
 
 class EventRegisterForm(FlaskForm):
-    # TODO Split time into YYYY:MM:DD HH:mm:SS dropdowns and all the associated code with that
-    time = StringField("Time", validators=[DataRequired()])
+    # Programatically generate selectable years, days etc..
+    year_choices = []
+    for i in range(1900, 2021):
+        print(i)
+        year_choices.append(tuple((i, i)))
+    month_choices = []
+    for i in range(1, 13):
+        print(i)
+        month_choices.append(tuple((i, i)))
+    day_choices = []
+    for i in range(1, 32):
+        print(i)
+        day_choices.append(tuple((i, i)))
+    hour_choices = []
+    for i in range(1, 25):
+        print(i)
+        hour_choices.append(tuple((i, i)))
+    minute_choices = []
+    for i in range(0, 60):
+        print(i)
+        minute_choices.append(tuple((i, i)))
+    second_choices = []
+    for i in range(0, 60):
+        print(i)
+        second_choices.append(tuple((i, i)))
+    time_year = SelectField("Year", choices=year_choices, validators=[DataRequired()])
+    time_month = SelectField("Month", choices=month_choices, validators=[DataRequired()])
+    time_day = SelectField("Day", choices=day_choices, validators=[DataRequired()])
+    time_hour = SelectField("Hour", choices=hour_choices, validators=[DataRequired()])
+    time_minute = SelectField("Minute", choices=minute_choices, validators=[DataRequired()])
+    time_second = SelectField("Second", choices=second_choices, validators=[DataRequired()])
+
+    # Old time input method
+    # time = StringField("Time", validators=[DataRequired()])
     how = StringField("How", validators=[DataRequired()])
     who = StringField("Who", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+
+def build_timestamp(y, mo, d, h, mi, s):
+    return str(y) + "-" + str(mo) + "-" + str(d) + " " + str(h) + ":" + str(mi) + ":" + str(s)
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -39,10 +76,19 @@ def add_event():
         # add event to database
         hero_db = HeroDatabase()
         hero_db.connect()
-        the_time = form.time.data
+
+        # get all the time data
+        year = request.form.get('time_year')
+        month = request.form.get('time_month')
+        day = request.form.get('time_day')
+        hour = request.form.get('time_hour')
+        minute = request.form.get('time_minute')
+        second = request.form.get('time_second')
+        # the_when = form.time.data
+        the_when = build_timestamp(year, month, day, hour, minute, second)
         the_how = form.how.data
         the_who = form.who.data
-        hero_db.new_save(the_time, the_how, the_who)
+        hero_db.new_save(the_when, the_how, the_who)
         hero_db.close()
         return show_events()
     return render_template('formadd.html', title='Add Event', form=form)

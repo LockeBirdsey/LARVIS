@@ -4,8 +4,14 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <p>
-        {{ form.time.label }}<br>
-        {{ form.time(size=32) }}
+        Time:
+        {{ form.time_year}}
+        {{ form.time_month}}
+        {{ form.time_day}}
+        {{ form.time_hour}}
+        {{ form.time_minute}}
+        {{ form.time_second}}
+
     </p>
     <p>
         {{ form.how.label }}<br>
