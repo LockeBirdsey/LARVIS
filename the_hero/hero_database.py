@@ -33,7 +33,7 @@ class HeroDatabase:
 
     def inspect_all(self):
         return self.query(
-            'SELECT * FROM events JOIN people ON (events.who_id = people.id) ORDER BY events.event_when;')
+            'SELECT * FROM events LEFT OUTER JOIN people ON (events.who_id = people.id) ORDER BY events.event_when;')
 
     def get_all_people_from_people(self):
         return self.query("SELECT name, id FROM people ORDER BY id;")
