@@ -57,6 +57,7 @@ class CoffeeMachine:
         return change
 
     def main(self):
+        print("Inserting 500eu for a 3.14eu coffee")
         print(self.return_coins(3.14, 500))
 
 
