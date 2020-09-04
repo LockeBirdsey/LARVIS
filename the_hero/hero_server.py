@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
-import psycopg2
 
 # This can be seen from Docker
 from hero import HeroDatabase
@@ -19,14 +18,14 @@ app.config['SECRET_KEY'] = 'filesystem'
 def show_events():
     hero_db = HeroDatabase()
     hero_db.connect()
-    all_results = hero_db.inspect()
+    all_results = hero_db.inspect_all()
     people = hero_db.get_all_people_from_people()
     hero_db.close()
     return render_template('existingevents.html', title='Existing Events', rows=all_results, people=people)
 
 
 class EventRegisterForm(FlaskForm):
-    # Programatically generate selectable years, days etc..
+    # Programmatically generate selectable years, days etc..
     year_choices = []
     for i in range(1900, 2021):
         print(i)
@@ -84,10 +83,11 @@ def add_event():
         hour = request.form.get('time_hour')
         minute = request.form.get('time_minute')
         second = request.form.get('time_second')
-        # the_when = form.time.data
         the_when = build_timestamp(year, month, day, hour, minute, second)
+        # get the remaining event data
         the_how = form.how.data
         the_who = form.who.data
+        # create the database records
         hero_db.new_save(the_when, the_how, the_who)
         hero_db.close()
         return show_events()
