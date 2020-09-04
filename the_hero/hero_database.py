@@ -28,6 +28,9 @@ class HeroDatabase:
         self.conn.commit()
         return cur.fetchone()[0]
 
+    def get_persons_id(self, who):
+        return self.query_with_params('SELECT id FROM people WHERE name = %s', (who,))[0]
+
     def inspect_all(self):
         return self.query(
             'SELECT * FROM events JOIN people ON (events.who_id = people.id) ORDER BY events.event_when;')
@@ -42,8 +45,17 @@ class HeroDatabase:
         cur.close()
         return all_results
 
+    def query_with_params(self, query, params):
+        cur = self.conn.cursor()
+        cur.execute(query, params)
+        all_results = cur.fetchall()
+        cur.close()
+        return all_results
+
     def remove_person_from_database(self, person):
         cur = self.conn.cursor()
+        person_id = self.get_persons_id(person)
+        cur.execute("UPDATE events SET who_id = NULL WHERE who_id = %s", (person_id,))
         cur.execute("DELETE FROM people WHERE name = %s", (person,))
         self.conn.commit()
 
