@@ -27,30 +27,13 @@ def show_events():
 
 class EventRegisterForm(FlaskForm):
     # Programmatically generate selectable years, days etc..
-    year_choices = []
-    for i in range(1900, 2021):
-        print(i)
-        year_choices.append(tuple((i, i)))
-    month_choices = []
-    for i in range(1, 13):
-        print(i)
-        month_choices.append(tuple((i, i)))
-    day_choices = []
-    for i in range(1, 32):
-        print(i)
-        day_choices.append(tuple((i, i)))
-    hour_choices = []
-    for i in range(1, 25):
-        print(i)
-        hour_choices.append(tuple((i, i)))
-    minute_choices = []
-    for i in range(0, 60):
-        print(i)
-        minute_choices.append(tuple((i, i)))
-    second_choices = []
-    for i in range(0, 60):
-        print(i)
-        second_choices.append(tuple((i, i)))
+    year_choices = [tuple((i, i)) for i in range(1900, 2021)]
+    month_choices = [tuple((i, i)) for i in range(1, 13)]
+    day_choices = [tuple((i, i)) for i in range(1, 32)]
+    hour_choices = [tuple((i, i)) for i in range(0, 24)]
+    minute_choices = [tuple((i, i)) for i in range(0, 60)]
+    second_choices = [tuple((i, i)) for i in range(0, 60)]
+
     # Build the form fields
     time_year = SelectField("Year", choices=year_choices, validators=[DataRequired()])
     time_month = SelectField("Month", choices=month_choices, validators=[DataRequired()])
@@ -59,6 +42,7 @@ class EventRegisterForm(FlaskForm):
     time_minute = SelectField("Minute", choices=minute_choices, validators=[DataRequired()])
     time_second = SelectField("Second", choices=second_choices, validators=[DataRequired()])
 
+    # Build the remaining form fields
     how = StringField("How", validators=[DataRequired()])
     who = StringField("Who", validators=[DataRequired()])
     submit = SubmitField("Submit")
@@ -83,9 +67,11 @@ def add_event():
         minute = request.form.get('time_minute')
         second = request.form.get('time_second')
         the_when = build_timestamp(year, month, day, hour, minute, second)
+
         # Get the remaining event data
         the_how = form.how.data
         the_who = form.who.data
+
         # Create the database records
         hero_db.new_save(the_when, the_how, the_who)
         hero_db.close()

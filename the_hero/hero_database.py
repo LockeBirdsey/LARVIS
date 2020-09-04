@@ -14,6 +14,8 @@ class HeroDatabase:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
+    # Save a new event into the events table and the person into the people table
+    # and link based on the person's generated id
     def new_save(self, when, how, who):
         insert_string = 'INSERT INTO events(event_when, event_how, who_id) VALUES(TIMESTAMP %s, %s, %s)'
         cur = self.conn.cursor()
