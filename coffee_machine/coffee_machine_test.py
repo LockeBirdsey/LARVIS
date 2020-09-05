@@ -108,7 +108,3 @@ class TestCoffeeMachine(unittest.TestCase):
     def test_set_to_negative(self):
         cm = CoffeeMachine()
         self.assertRaises(Exception, cm.return_coins, -0.1, 500)  # Coffee price set to negative
-
-    def test_zero_money_inserted(self):
-        cm = CoffeeMachine()
-        self.assertRaises(Exception, cm.return_coins, -0.1, 0)  # Coffee price set to negative
