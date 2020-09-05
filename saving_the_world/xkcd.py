@@ -10,7 +10,7 @@ class ComicStrip:
     def __init__(self, path, last_scraped, comic_name):
         self.root_path = path
         self.last_scraped = last_scraped
-        self.comic_name = comic_name
+        self.local_comic_name = comic_name
 
     def new_comic(self, comic_id, time, save_path):
         self.comic_id = comic_id
@@ -18,7 +18,7 @@ class ComicStrip:
         self.most_recent_save = save_path
 
     comic_id = ""  # comic name
-    comic_name = ""  # local name for comic
+    local_comic_name = ""  # local name for comic
     root_path = ""  # path to local file
     last_scraped = ""  # time
     most_recent_save = ""  # the most recent save location on disk
@@ -57,7 +57,15 @@ class XKCDScraper:
 
     # Check ID against existing downloads
     def check_duplicate(self, comic_id):
-        return self.comic_strip_a.comic_id == comic_id or self.comic_strip_b.comic_id == comic_id
+        newest_comic = self.get_newest_comic_strip(self.comic_strip_a, self.comic_strip_b)
+        return newest_comic == comic_id
+
+    # Return the most recently updated comic strip
+    def get_newest_comic_strip(self, comic_a, comic_b):
+        if comic_a.last_scraped >= comic_b.last_scraped:
+            return comic_a
+        else:
+            return comic_b
 
     # Return the oldest updated comic strip
     def get_oldest_comic_strip(self, comic_a, comic_b):
@@ -66,6 +74,7 @@ class XKCDScraper:
         else:
             return comic_b
 
+    # Delete the most recent version of a comic (if one exists)
     def delete_previous_comic_instance(self, comic):
         if len(str(comic.most_recent_save)) > 0:
             Path(comic.most_recent_save).unlink(missing_ok=False)
@@ -74,9 +83,8 @@ class XKCDScraper:
     def store_comic(self, comic_id, link, time_stamp):
         comic = self.get_oldest_comic_strip(self.comic_strip_a, self.comic_strip_b)
         self.delete_previous_comic_instance(comic)
-        comic_path = comic.root_path.joinpath(comic.comic_name + Path(link).suffix)
+        comic_path = comic.root_path.joinpath(comic.local_comic_name + Path(link).suffix)
         comic.new_comic(comic_id, time_stamp, comic_path)
-        print("Saving comic to " + str(comic_path))
         urlretrieve(link, comic_path)
 
 
