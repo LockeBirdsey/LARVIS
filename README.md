@@ -2,13 +2,10 @@
 
 # Act 1
 From the `coffee_machine` directory, execute the following:
-To run: 
 
-`python coffeemachine.py`
+To run: `python coffeemachine.py`
 
-To run tests: 
-
-`python -m unittest coffee_machine_test.py`
+To run tests: `python -m unittest coffee_machine_test.py`
 
 # Act 2
 From the `saving_the_world` directory, execute the following:
