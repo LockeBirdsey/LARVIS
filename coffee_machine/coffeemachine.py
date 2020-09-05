@@ -24,7 +24,7 @@ class CoffeeMachine:
         num_twenty_cent_coins = 0
         num_ten_cent_coins = 0
         num_five_cent_coins = 0
-        num_two_cent_coins = 0  # did you know 2 and 1 cent euro coins existed? I didn't.
+        num_two_cent_coins = 0
         num_one_cent_coins = 0
 
         while remaining_eur >= 0.50:
