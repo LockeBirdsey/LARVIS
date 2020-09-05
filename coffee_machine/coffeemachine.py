@@ -58,7 +58,7 @@ class CoffeeMachine:
 
     def main(self):
         print("Inserting 500eu for a 3.14eu coffee")
-        print(self.return_coins(3.14, 500))
+        print(self.return_coins(0, 500))
 
 
 if __name__ == '__main__':

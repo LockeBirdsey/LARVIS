@@ -81,22 +81,21 @@ class XKCDScraper:
 
 
 class XKCDService:
-    # Run hourly +/- 1.5 seconds
+    # Run hourly +/- 1.5 seconds (comic scraping is not constant in time)
     # Not suitable if this service is time critical
     def main(self):
         scraper = XKCDScraper()
+        new_exec_time = datetime.now()
         comic_details = scraper.get_comic()
         while scraper.check_duplicate(comic_details[0]) is True:
             comic_details = scraper.get_comic()
         scraper.store_comic(comic_details[0], comic_details[1], comic_details[2])
-        self.schedule_next()
+        self.schedule_next(new_exec_time)
 
-    def schedule_next(self):
+    def schedule_next(self, last_exec):
         # start the timer for the next Execution of the service
-        now = datetime.now()
-        next_exec = now.replace(day=now.day, hour=now.hour, minute=now.minute, second=now.second,
-                                microsecond=now.microsecond) + timedelta(hours=1)
-        time_delta = next_exec - now
+        next_exec = last_exec + timedelta(hours=1)
+        time_delta = next_exec - last_exec
         seconds = time_delta.total_seconds()
         timer = Timer(seconds, self.main)
         timer.start()
