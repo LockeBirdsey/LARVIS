@@ -113,7 +113,7 @@ def modify_people():
     if 'modify' in request.form:
         new_name = form.new_name.data
         hero_db.connect()
-        if len(new_name) is 0:
+        if len(new_name) == 0:
             flash('Cannot rename someone to an empty string')
         else:
             hero_db.rename_person(str(selected_person_id), new_name)
