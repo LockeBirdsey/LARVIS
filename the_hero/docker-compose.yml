@@ -21,11 +21,9 @@ services:
       dockerfile: Dockerfile
     environment:
       - FLASK_ENV=docker
-      - PYTHONUNBUFFERED=0
     ports:
       - 5000:5000
     volumes:
       - .:/app
     depends_on:
       - postgres
-#    entrypoint: ["python", "hero_server.py"]
