@@ -16,6 +16,7 @@ app.config['SECRET_KEY'] = 'filesystem'
 hero_db = HeroDatabase()
 
 
+# Builds the main page which displays all existing events and the list of people
 @app.route('/')
 def show_events():
     hero_db.connect()
@@ -25,6 +26,7 @@ def show_events():
     return render_template('existingevents.html', title='Existing Events', rows=all_results, people=people)
 
 
+# Generates a form where a new event can be registered
 class EventRegisterForm(FlaskForm):
     # Programmatically generate selectable years, days etc..
     year_choices = [tuple((i, i)) for i in range(1900, 2021)]
@@ -48,10 +50,12 @@ class EventRegisterForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+# Generates a string that conforms the Postgres TIMESTAMP type
 def build_timestamp(y, mo, d, h, mi, s):
     return str(y) + "-" + str(mo) + "-" + str(d) + " " + str(h) + ":" + str(mi) + ":" + str(s)
 
 
+# Builds the page where new events can be added
 @app.route('/add', methods=['GET', 'POST'])
 def add_event():
     form = EventRegisterForm()
@@ -79,6 +83,7 @@ def add_event():
     return render_template('formadd.html', title='Add Event', form=form)
 
 
+# Generates a form where a person can be renamed or deleted
 class PersonModifyForm(FlaskForm):
     people = SelectField("People", validators=[DataRequired()])
     new_name = StringField("New Name")
@@ -86,6 +91,7 @@ class PersonModifyForm(FlaskForm):
     modify = SubmitField("Rename")
 
 
+# Builds the page where people can be modified
 @app.route('/people', methods=['GET', 'POST'])
 def modify_people():
     form = PersonModifyForm()
@@ -93,25 +99,26 @@ def modify_people():
     hero_db.connect()
     people = hero_db.get_all_people()
     hero_db.close()
-    choices = [tuple((p[0], p[0])) for p in people]
+    # Populate the list of people with their ids
+    choices = [tuple((p[1], p[0])) for p in people]
     form.people.choices = choices
 
-    selected_person = request.form.get('people')
-    if selected_person is not None:
-        if 'delete' in request.form:
-            hero_db.connect()
-            hero_db.remove_person(str(selected_person))
+    # Get the ID of the selected person
+    selected_person_id = request.form.get('people')
+    if 'delete' in request.form:
+        hero_db.connect()
+        hero_db.remove_person_with_id(str(selected_person_id))
+        hero_db.close()
+        return show_events()
+    if 'modify' in request.form:
+        new_name = form.new_name.data
+        hero_db.connect()
+        if len(new_name) is 0:
+            flash('Cannot rename someone to an empty string')
+        else:
+            hero_db.rename_person(str(selected_person_id), new_name)
             hero_db.close()
             return show_events()
-        if 'modify' in request.form:
-            new_name = form.new_name.data
-            hero_db.connect()
-            if len(new_name) is 0:
-                flash('Cannot rename someone to an empty string')
-            else:
-                hero_db.rename_person(str(selected_person), new_name)
-                hero_db.close()
-                return show_events()
     return render_template('formpeople.html', title='People', form=form)
 
 
