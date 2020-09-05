@@ -3,35 +3,39 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen, urlretrieve
 from datetime import datetime, timedelta
 from threading import Timer
-import os
+from pathlib import Path
 
 
 class ComicStrip:
-    def __init__(self, path, last_scraped):
-        self.path = path
+    def __init__(self, path, last_scraped, comic_name):
+        self.root_path = path
         self.last_scraped = last_scraped
+        self.comic_name = comic_name
 
-    def new_comic(self, comic_id, time):
+    def new_comic(self, comic_id, time, save_path):
         self.comic_id = comic_id
         self.last_scraped = time
+        self.most_recent_save = save_path
 
     comic_id = ""  # comic name
-    path = ""  # path to local file
+    comic_name = ""  # local name for comic
+    root_path = ""  # path to local file
     last_scraped = ""  # time
+    most_recent_save = ""  # the most recent save location on disk
 
 
 class XKCDScraper:
     # Use the XKCD automatic random comic generator
     XKCD_RANDOM_LINK = "https://c.xkcd.com/random/comic/"
     # We assume the execute directory of the service will store the images
-    STORAGE_PATH = os.getcwd()
+    STORAGE_PATH = Path.cwd()
 
     # Initialisation of the ComicStrip objects
     # Only saving two comic strips at a time
     # Set up the storage paths here since we a) are only allowed two and b) they won't be changing
     start_time = datetime.now()
-    comic_strip_a = ComicStrip(os.path.join(STORAGE_PATH, "a.png"), start_time)
-    comic_strip_b = ComicStrip(os.path.join(STORAGE_PATH, "b.png"), start_time)
+    comic_strip_a = ComicStrip(STORAGE_PATH, start_time, "xkcd_comic_a")
+    comic_strip_b = ComicStrip(STORAGE_PATH, start_time, "xkcd_comic_b")
 
     # Get the link and other information to the comic
     def get_comic(self):
@@ -62,12 +66,18 @@ class XKCDScraper:
         else:
             return comic_b
 
+    def delete_previous_comic_instance(self, comic):
+        if len(str(comic.most_recent_save)) > 0:
+            Path(comic.most_recent_save).unlink(missing_ok=False)
+
     # Replace the oldest ComicStrip and download and store the comic
     def store_comic(self, comic_id, link, time_stamp):
         comic = self.get_oldest_comic_strip(self.comic_strip_a, self.comic_strip_b)
-        comic.new_comic(comic_id, time_stamp)
-        urlretrieve(link, comic.path)
-        print("Saving comic to " + comic.path)
+        self.delete_previous_comic_instance(comic)
+        comic_path = comic.root_path.joinpath(comic.comic_name + Path(link).suffix)
+        comic.new_comic(comic_id, time_stamp, comic_path)
+        print("Saving comic to " + str(comic_path))
+        urlretrieve(link, comic_path)
 
 
 class XKCDService:
@@ -85,7 +95,7 @@ class XKCDService:
         # start the timer for the next Execution of the service
         now = datetime.now()
         next_exec = now.replace(day=now.day, hour=now.hour, minute=now.minute, second=now.second,
-                                microsecond=now.microsecond) + timedelta(minutes=1)
+                                microsecond=now.microsecond) + timedelta(hours=1)
         time_delta = next_exec - now
         seconds = time_delta.total_seconds()
         timer = Timer(seconds, self.main)
