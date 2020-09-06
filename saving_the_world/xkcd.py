@@ -58,7 +58,7 @@ class XKCDScraper:
     # Check ID against existing downloads
     def check_duplicate(self, comic_id):
         newest_comic = self.get_newest_comic_strip(self.comic_strip_a, self.comic_strip_b)
-        return newest_comic == comic_id
+        return newest_comic.comic_id == comic_id
 
     # Return the most recently updated comic strip
     def get_newest_comic_strip(self, comic_a, comic_b):
