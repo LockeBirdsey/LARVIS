@@ -12,7 +12,9 @@ From the `saving_the_world` directory, execute the following:
 
 `pip install -r requirements.txt`
 
-`python xkcd.py`
+To run the service: `python xkcd.py`
+
+To run tests: `python -m unittest xkcd_test.py`
 
 # Act 3
 From the `the_hero` directory, execute the following:
@@ -21,4 +23,4 @@ From the `the_hero` directory, execute the following:
 
 `docker-compose up`
 
-Access site from localhost:5000
+Access site from `localhost:5000`
