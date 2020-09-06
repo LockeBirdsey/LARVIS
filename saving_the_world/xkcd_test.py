@@ -7,30 +7,31 @@ from xkcd import XKCDScraper, XKCDService, ComicStrip
 class TestXKCDScraper(unittest.TestCase):
     def test_for_duplicates(self):
         scraper = XKCDScraper()
-        comic_a = ComicStrip("", 0, "comic_a")
-        comic_b = ComicStrip("", 0, "comic_b")
+        start_time = datetime.now()
+        comic_a = ComicStrip("", start_time, "comic_a")
+        comic_b = ComicStrip("", start_time, "comic_b")
         scraper.comic_strip_a = comic_a
         scraper.comic_strip_b = comic_b
         # update both comics manually
 
         # Make request
         scraped_id = "SomeComic1"
-        time = 1  # manually increment the time
         # No duplicates can exist at this stage
         self.assertFalse(scraper.check_duplicate(comic_id=scraped_id))
-        comic_a.new_comic(scraped_id, time, scraped_id + ".png")
+        sleep(1)  # simulate downloading the comic
+        comic_a.new_comic(scraped_id, datetime.now(), scraped_id + ".png")
 
         # Make new request
         scraped_id = "SomeComic2"
-        time = 2  # manually increment the time
         self.assertFalse(scraper.check_duplicate(comic_id=scraped_id))
-        comic_b.new_comic(scraped_id, time, scraped_id + ".png")
+        sleep(1)  # simulate downloading the comic
+        comic_b.new_comic(scraped_id, datetime.now(), scraped_id + ".png")
 
         # Make new request
         scraped_id = "SomeComic2"
-        time = 3  # manually increment the time
         self.assertTrue(scraper.check_duplicate(comic_id=scraped_id))
-        comic_a.new_comic(scraped_id, time, scraped_id + ".png")
+        sleep(1)  # simulate downloading the comic
+        comic_a.new_comic(scraped_id, datetime.now(), scraped_id + ".png")
 
     def test_get_newest_comic(self):
         scraper = XKCDScraper()
